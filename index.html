@@ -1,0 +1,674 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Oras at Kita</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#f7f8f3">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;800&display=swap">
+<style>
+/* Layout: one phone column, a plain header with the running timer, big tinted task tiles, three tabs at the bottom. Type is Atkinson Hyperlegible for older eyes on small phones. */
+:root {
+  --paper: oklch(98.6% 0.003 100);
+  --pale: oklch(95.5% 0.006 100);
+  --rule: oklch(89% 0.008 100);
+  --muted: oklch(45% 0.025 140);
+  --ink: oklch(23% 0.025 150);
+  --band: oklch(23% 0.025 150);
+  --band-deep: oklch(30% 0.03 150);
+  --on-band: oklch(98% 0.006 115);
+  --accent: oklch(82% 0.16 88);
+  --on-accent: oklch(23% 0.025 150);
+  --care: oklch(56% 0.16 33);
+  --kita: oklch(50% 0.12 150);
+  --samahan: oklch(50% 0.13 255);
+  --rest: oklch(62% 0.02 120);
+  --danger: oklch(50% 0.19 25);
+  --font-display: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, sans-serif;
+  --space-xs: 4px; --space-sm: 8px; --space-md: 16px; --space-lg: 24px; --space-xl: 32px;
+  --radius: 12px;
+  --ease-out: cubic-bezier(.2,.7,.2,1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: oklch(19% 0.012 150); --pale: oklch(25% 0.015 150); --rule: oklch(33% 0.015 150);
+    --muted: oklch(75% 0.02 130); --ink: oklch(95% 0.008 115);
+    --band: oklch(95% 0.008 115); --band-deep: oklch(85% 0.01 115); --on-band: oklch(19% 0.012 150);
+    --accent: oklch(84% 0.15 88); --on-accent: oklch(19% 0.012 150);
+    --care: oklch(72% 0.14 33); --kita: oklch(72% 0.13 150); --samahan: oklch(72% 0.11 255); --rest: oklch(62% 0.02 120);
+    --danger: oklch(70% 0.17 25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: oklch(19% 0.012 150); --pale: oklch(25% 0.015 150); --rule: oklch(33% 0.015 150);
+    --muted: oklch(75% 0.02 130); --ink: oklch(95% 0.008 115);
+    --band: oklch(95% 0.008 115); --band-deep: oklch(85% 0.01 115); --on-band: oklch(19% 0.012 150);
+    --accent: oklch(84% 0.15 88); --on-accent: oklch(19% 0.012 150);
+    --care: oklch(72% 0.14 33); --kita: oklch(72% 0.13 150); --samahan: oklch(72% 0.11 255); --rest: oklch(62% 0.02 120);
+    --danger: oklch(70% 0.17 25);
+  color-scheme: dark;
+}
+[hidden] { display: none !important; }
+html, body { overflow-x: clip; }
+body { background: var(--paper); color: var(--ink); font: 400 17px/1.45 var(--font-body); -webkit-tap-highlight-color: transparent; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+.wrap { max-width: 480px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2 { font-family: var(--font-display); font-weight: 800; letter-spacing: -.01em; line-height: 1.1; margin: 0; text-wrap: balance; }
+button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
+button:focus-visible, select:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* top band */
+.top { background: var(--paper); color: var(--ink); border-bottom: 1px solid var(--rule); position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; }
+.top .wrap { padding-block: var(--space-md); display: grid; gap: var(--space-sm); }
+.brand { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-md); }
+.brand h1 { font-size: 1.3rem; }
+.brand span { font-size: .95rem; color: var(--muted); }
+.timer { --c: var(--rest); display: flex; align-items: center; gap: var(--space-md); background: color-mix(in oklab, var(--c) 20%, var(--paper)); border-radius: var(--radius); padding: var(--space-md); min-height: 72px; }
+.timer .ic { color: var(--c); }
+.timer .ic { width: 44px; height: 44px; flex: none; }
+.timer .what { flex: 1; min-width: 0; }
+.timer .what b { display: block; font-size: 1.15rem; }
+.timer .clock { font-size: 1.9rem; font-weight: 600; letter-spacing: .01em; }
+.timer.idle { background: none; padding: 0; min-height: 0; color: var(--muted); font-size: .95rem; }
+.timer.idle .ic { width: 22px; height: 22px; }
+.stopbtn { background: var(--band); color: var(--on-band); font-weight: 600; border-radius: 999px; padding: 14px 20px; min-height: 52px; white-space: nowrap; }
+.stopbtn:active { transform: translateY(1px); }
+
+main { padding-block: var(--space-lg) 120px; }
+.view { display: grid; gap: var(--space-lg); }
+.lead { color: var(--muted); margin: 0; }
+
+/* sample banner */
+.sample { display: flex; gap: var(--space-md); align-items: center; justify-content: space-between; background: var(--pale); border-radius: var(--radius); padding: var(--space-sm) var(--space-md); font-size: .95rem; }
+.sample button { font-weight: 600; text-decoration: underline; padding: 10px 4px; white-space: nowrap; }
+
+/* task tiles */
+.tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.tile { --c: var(--rest); position: relative; display: grid; justify-items: start; gap: 6px; text-align: left; background: color-mix(in oklab, var(--c) 20%, var(--paper)); border-radius: var(--radius); padding: var(--space-md); min-height: 132px; border: 3px solid transparent; transition: transform .12s var(--ease-out); }
+.tile:active { transform: scale(.98); }
+.tile .ic { width: 44px; height: 44px; color: var(--c); }
+.tile b { font-size: 1.2rem; line-height: 1.2; font-weight: 800; }
+.tile small { color: var(--ink); opacity: .75; font-size: .9rem; line-height: 1.3; }
+.tile.on { border-color: var(--c); background: var(--paper); }
+.tile.on::after { content: "Ginagawa ngayon"; position: absolute; top: 12px; right: 12px; font-size: .72rem; font-weight: 600; letter-spacing: .03em; color: var(--c); }
+.c-care { --c: var(--care); } .c-kita { --c: var(--kita); } .c-samahan { --c: var(--samahan); } .c-rest { --c: var(--rest); }
+
+.wide { width: 100%; background: var(--paper); border: 2px solid var(--rule); border-radius: var(--radius); padding: 16px; min-height: 56px; font-weight: 600; }
+.wide:hover { border-color: var(--muted); }
+
+/* entry list */
+.list { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.list li { display: flex; align-items: center; gap: var(--space-md); padding-block: 12px; border-bottom: 1px solid var(--rule); }
+.list .ic { width: 28px; height: 28px; flex: none; }
+.list .t { flex: 1; min-width: 0; }
+.list .t small { display: block; color: var(--muted); font-size: .85rem; }
+.list .m { font-weight: 600; }
+.del { width: 44px; height: 44px; border-radius: 50%; color: var(--muted); font-size: 1.4rem; line-height: 1; }
+.del:hover { background: var(--pale); color: var(--danger); }
+.empty { color: var(--muted); padding: var(--space-md) 0; margin: 0; }
+
+h2 { font-size: 1.3rem; }
+.sec { display: grid; gap: var(--space-sm); }
+
+/* week */
+.pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.big { background: color-mix(in oklab, var(--c, var(--rest)) 16%, var(--paper)); border-radius: var(--radius); padding: var(--space-md); display: grid; gap: 2px; }
+.big .n { font-family: var(--font-display); font-size: 2.4rem; font-weight: 800; line-height: 1; }
+.big .n small { font-size: 1rem; font-family: var(--font-body); font-weight: 500; }
+.big span { color: var(--muted); font-size: .9rem; }
+.big.care { --c: var(--care); } .big.kita { --c: var(--kita); }
+.big.care .n { color: var(--care); } .big.kita .n { color: var(--kita); }
+.bars { display: grid; gap: 12px; }
+.bar { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; gap: 10px; }
+.bar .ic { width: 28px; height: 28px; color: var(--c); }
+.bar .track { display: grid; gap: 4px; min-width: 0; }
+.bar .track div { height: 12px; border-radius: 6px; background: var(--c); min-width: 2px; }
+.bar .track span { font-size: .9rem; }
+.bar .v { font-weight: 600; font-size: .95rem; }
+.days { display: grid; gap: 10px; }
+.day { display: grid; grid-template-columns: 72px minmax(0, 1fr) 48px; align-items: center; gap: 10px; font-size: .95rem; }
+.day .stack { display: flex; height: 18px; border-radius: 5px; overflow: hidden; background: var(--pale); }
+.day .stack i { display: block; height: 100%; background: var(--c); }
+.day .v { text-align: right; font-weight: 600; }
+.day small { white-space: nowrap; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .85rem; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: var(--c); margin-right: 6px; }
+
+/* share */
+.code { display: flex; align-items: center; gap: var(--space-md); background: var(--pale); border-radius: var(--radius); padding: var(--space-md); }
+.code .lbl { flex: 1; }
+.step { display: flex; align-items: center; gap: 4px; }
+.step button { width: 52px; height: 52px; border-radius: 50%; background: var(--paper); border: 2px solid var(--rule); font-size: 1.5rem; font-weight: 600; }
+.step output { min-width: 3ch; text-align: center; font-size: 1.4rem; font-weight: 600; }
+pre { white-space: pre-wrap; background: var(--pale); border-radius: var(--radius); padding: var(--space-md); margin: 0; font: 400 .95rem/1.5 var(--font-body); user-select: all; }
+.primary { width: 100%; background: var(--band); color: var(--on-band); border-radius: var(--radius); padding: 16px; min-height: 56px; font-weight: 600; font-size: 1.05rem; }
+.primary:active { transform: translateY(1px); }
+.danger { color: var(--danger); border-color: color-mix(in oklab, var(--danger) 40%, var(--rule)); }
+.note { font-size: .9rem; color: var(--muted); margin: 0; }
+
+/* sheet (add forgotten time) */
+.sheet { position: fixed; inset: auto 0 0 0; z-index: 20; background: var(--paper); border-radius: 20px 20px 0 0; box-shadow: 0 -8px 40px oklch(0% 0 0 / .25); padding-bottom: calc(var(--space-lg) + env(safe-area-inset-bottom, 0px)); max-height: 92vh; overflow-y: auto; }
+.sheet .wrap { padding-block: var(--space-lg) 0; display: grid; gap: var(--space-md); }
+.scrim { position: fixed; inset: 0; z-index: 19; background: oklch(0% 0 0 / .4); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { display: inline-flex; align-items: center; gap: 8px; border: 2px solid var(--rule); border-radius: 999px; padding: 10px 14px; min-height: 48px; font-weight: 500; }
+.chip .ic { width: 22px; height: 22px; color: var(--c); }
+.chip[aria-pressed="true"] { border-color: var(--c, var(--band)); background: var(--pale); font-weight: 600; }
+.dur { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); background: var(--pale); border-radius: var(--radius); padding: var(--space-md); }
+.dur output { font-size: 1.6rem; font-weight: 600; }
+.row2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+
+/* tabs */
+nav.tabs { position: fixed; inset: auto 0 0 0; z-index: 6; background: var(--paper); border-top: 1px solid var(--rule); padding-bottom: env(safe-area-inset-bottom, 0px); }
+nav.tabs .wrap { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+nav.tabs button { display: grid; justify-items: center; gap: 2px; padding: 10px 4px; min-height: 64px; font-size: .9rem; color: var(--muted); white-space: nowrap; }
+nav.tabs button .ic { width: 26px; height: 26px; }
+nav.tabs button[aria-current="page"] { color: var(--ink); font-weight: 800; box-shadow: inset 0 3px 0 var(--accent); }
+
+/* onboarding */
+.intro { display: grid; gap: var(--space-lg); padding-block: var(--space-lg); }
+.intro h2 { font-size: 2.1rem; line-height: 1.05; }
+.intro ul { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--space-md); }
+.intro li { display: flex; gap: var(--space-md); align-items: flex-start; }
+.intro li .ic { width: 32px; height: 32px; flex: none; color: var(--kita); }
+
+.field { display: grid; gap: 6px; }
+.field label { font-weight: 600; }
+.field input { font: inherit; font-size: 1.2rem; color: var(--ink); background: var(--paper); border: 2px solid var(--rule); border-radius: var(--radius); padding: 14px 16px; min-height: 56px; text-transform: lowercase; }
+.field input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.field .err { color: var(--danger); font-size: .95rem; margin: 0; }
+.gstats { display: grid; gap: 12px; }
+.toast { position: fixed; left: 50%; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 30; background: var(--ink); color: var(--paper); border-radius: 12px; padding: 12px 16px; display: flex; gap: var(--space-md); align-items: center; width: min(440px, calc(100% - 32px)); box-shadow: 0 6px 24px oklch(0% 0 0 / .25); }
+.toast span { flex: 1; }
+.toast button { color: var(--accent); font-weight: 600; padding: 8px; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-bahay" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></symbol>
+    <symbol id="i-alaga" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7.5-4.6-7.5-10.2A4 4 0 0 1 12 7.3a4 4 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z"/></symbol>
+    <symbol id="i-babuyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="11" cy="13" rx="7.5" ry="5.5"/><path d="M6 8.5 5 5.5l3.5 2"/><ellipse cx="18.5" cy="13.5" rx="2" ry="2.2"/><path d="M7 18v2.5M14 18v2.5"/><circle cx="14.5" cy="11" r=".6" fill="currentColor"/></symbol>
+    <symbol id="i-kapehan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M16 10.5h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 3.5c-.8 1 .8 2 0 3M12 3.5c-.8 1 .8 2 0 3"/></symbol>
+    <symbol id="i-samahan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8.5" r="3"/><circle cx="16.5" cy="8.5" r="3"/><path d="M2.5 20a5.5 5.5 0 0 1 11 0M11 20a5.5 5.5 0 0 1 11 0"/></symbol>
+    <symbol id="i-pahinga" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></symbol>
+    <symbol id="i-today" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+    <symbol id="i-week" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 20V12M10 20V6M15 20v-9M20 20V9"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4M8 7.5 12 4l4 3.5"/><path d="M5 12v7h14v-7"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></symbol>
+    <symbol id="i-hand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 12V6.5a1.5 1.5 0 0 1 3 0V11M10 11V4.5a1.5 1.5 0 0 1 3 0V11M13 11V5.5a1.5 1.5 0 0 1 3 0V12M16 12V8.5a1.5 1.5 0 0 1 3 0V14a7 7 0 0 1-7 7h-.5A6.5 6.5 0 0 1 6 17.5L4 14a1.5 1.5 0 0 1 2.5-1.6L7 13"/></symbol>
+  </defs>
+</svg>
+
+<header class="top" id="top">
+  <div class="wrap">
+    <div class="brand"><h1>Oras at Kita</h1><span id="dateline" class="num"></span></div>
+    <div class="timer idle" id="timer" aria-live="polite"></div>
+  </div>
+</header>
+
+<main class="wrap" id="main"></main>
+
+<nav class="tabs" id="tabs" aria-label="Mga screen" hidden>
+  <div class="wrap">
+    <button type="button" id="tab-ngayon" data-tab="ngayon"><svg class="ic"><use href="#i-today"/></svg>Ngayon</button>
+    <button type="button" id="tab-linggo" data-tab="linggo"><svg class="ic"><use href="#i-week"/></svg>Linggo</button>
+    <button type="button" id="tab-ulat" data-tab="ulat"><svg class="ic"><use href="#i-share"/></svg>Ulat</button>
+  </div>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+const CATS = [
+  { id: 'bahay',   name: 'Gawaing bahay', sub: 'luto, laba, linis, igib', group: 'care' },
+  { id: 'alaga',   name: 'Pag-aalaga',    sub: 'anak, matanda, may sakit', group: 'care' },
+  { id: 'babuyan', name: 'Babuyan',       sub: 'pakain, linis ng kulungan', group: 'kita' },
+  { id: 'kapehan', name: 'Kapehan',       sub: 'sorting, giling, packing, benta', group: 'kita' },
+  { id: 'samahan', name: 'Samahan',       sub: 'pulong at gawain ng PFAI', group: 'samahan' },
+  { id: 'pahinga', name: 'Pahinga',       sub: 'tulog, kain, sariling oras', group: 'rest' },
+];
+const CAT = Object.fromEntries(CATS.map(c => [c.id, c]));
+const GROUPCLASS = { care: 'c-care', kita: 'c-kita', samahan: 'c-samahan', rest: 'c-rest' };
+const DAYS = ['Lin', 'Lun', 'Mar', 'Miy', 'Huw', 'Biy', 'Sab'];
+const MONTHS = ['Ene', 'Peb', 'Mar', 'Abr', 'May', 'Hun', 'Hul', 'Ago', 'Set', 'Okt', 'Nob', 'Dis'];
+const KEY = 'oras-at-kita-v1';
+const SUPABASE_URL = 'https://xdwfjttjkwesahxrlwdz.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_picuHDp0x6XAy-E3AVZdHg_8BkdkceD';
+const db = window.supabase && !SUPABASE_URL.startsWith('__')
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, storageKey: 'oras-at-kita-auth' } })
+  : null;
+
+let S = load();
+let tab = 'ngayon';
+let tick = null;
+
+function load() {
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.entries)) return s; } catch (e) {}
+  return { consent: false, member: 1, entries: [], running: null, sample: false, dels: [], group: null, wipe: false, lastSync: 0 };
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+S.dels = S.dels || []; S.group = S.group || null;
+
+/* sync with the backend. The phone keeps working offline and catches up later. */
+let syncing = false;
+async function signIn() {
+  const { data } = await db.auth.getSession();
+  if (data.session) return data.session.user;
+  const r = await db.auth.signInAnonymously();
+  if (r.error) throw r.error;
+  return r.data.user;
+}
+async function sync() {
+  if (!db || syncing || !navigator.onLine) return;
+  syncing = true;
+  try {
+    await signIn();
+    if (S.wipe) {
+      const { error } = await db.from('entries').delete().not('id', 'is', null);
+      if (error) throw error;
+      S.wipe = false;
+    }
+    const up = S.entries.filter(e => !e.sample && !e.synced);
+    if (up.length) {
+      const { error } = await db.from('entries').upsert(up.map(e => ({
+        id: e.id, cat: e.cat, day: e.day, mins: e.mins, started_at: e.start ? new Date(e.start).toISOString() : null })));
+      if (error) throw error;
+      up.forEach(e => { e.synced = true; });
+    }
+    if (S.dels.length) {
+      const ids = S.dels.slice();
+      const { error } = await db.from('entries').delete().in('id', ids);
+      if (error) throw error;
+      S.dels = S.dels.filter(i => !ids.includes(i));
+    }
+    S.lastSync = Date.now(); S.syncError = '';
+  } catch (e) {
+    S.syncError = String(e.message || e);
+  } finally {
+    syncing = false; save(); drawSyncLine();
+  }
+}
+async function pullIfEmpty() {
+  if (!db || !navigator.onLine || S.entries.some(e => !e.sample)) return;
+  try {
+    const { data: s } = await db.auth.getSession();
+    if (!s.session) return;
+    const since = dayKey(Date.now() - 60 * 864e5);
+    const { data, error } = await db.from('entries').select('id, cat, day, mins, started_at').gte('day', since);
+    if (error || !data.length) return;
+    data.forEach(r => S.entries.push({ id: r.id, cat: r.cat, day: r.day, mins: r.mins, start: r.started_at ? Date.parse(r.started_at) : null, synced: true }));
+    save(); render();
+  } catch (e) {}
+}
+function syncText() {
+  if (!db) return 'Sa phone lang naka-save ang log, wala pang koneksyon sa server.';
+  const pending = S.entries.filter(e => !e.sample && !e.synced).length + S.dels.length;
+  if (!navigator.onLine) return pending ? pending + ' log ang naghihintay. Isi-sync pag may internet na.' : 'Offline ka ngayon. Tuloy lang ang pag-log.';
+  if (S.syncError) return 'Hindi pa naka-sync. Susubukan ulit mamaya.';
+  if (pending) return 'Nagsi-sync...';
+  return S.lastSync ? 'Naka-sync lahat. Huling sync ' + new Date(S.lastSync).toLocaleTimeString('en-PH', { hour: 'numeric', minute: '2-digit' }) + '.' : 'Naka-sync lahat.';
+}
+function drawSyncLine() { const el = document.getElementById('syncline'); if (el) el.textContent = syncText(); }
+
+const dayKey = d => { d = new Date(d); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+const keyDate = k => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); };
+const shortDate = k => { const d = keyDate(k); return MONTHS[d.getMonth()] + ' ' + d.getDate(); };
+function hrs(mins) {
+  const h = Math.floor(mins / 60), m = Math.round(mins % 60);
+  if (!h) return m + ' min';
+  return m ? h + ' oras ' + m + ' min' : h + ' oras';
+}
+const hrsShort = mins => (Math.round(mins / 6) / 10).toLocaleString('en-PH') ;
+const icon = (id, cls = 'ic') => `<svg class="${cls}" aria-hidden="true"><use href="#i-${id}"/></svg>`;
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function last7() {
+  const out = [], t = new Date();
+  for (let i = 6; i >= 0; i--) out.push(dayKey(new Date(t.getFullYear(), t.getMonth(), t.getDate() - i)));
+  return out;
+}
+
+/* timer */
+function start(cat) {
+  if (S.running && S.running.cat === cat) return stop();
+  if (S.running) stop(true);
+  S.running = { cat, start: Date.now() };
+  save(); render();
+}
+function stop(quiet) {
+  const r = S.running; if (!r) return;
+  S.running = null;
+  let mins = Math.round((Date.now() - r.start) / 60000);
+  if (mins < 1) { save(); render(); if (!quiet) toast('Wala pang 1 minuto, kaya hindi na-save.'); return; }
+  let capped = false;
+  if (mins > 720) { mins = 720; capped = true; }
+  S.entries.push({ id: uid(), cat: r.cat, day: dayKey(r.start), mins, start: r.start });
+  save(); render(); sync();
+  if (capped) toast('Mukhang nakalimutang i-tapos. Ginawa naming 12 oras. Puwede mo itong burahin.');
+  else if (!quiet) toast(CAT[r.cat].name + ', ' + hrs(mins) + ', na-save na.');
+}
+
+function renderTimer() {
+  const el = document.getElementById('timer');
+  if (!S.running) {
+    el.className = 'timer idle';
+    el.innerHTML = `${icon('today')}<div class="what">Pindutin ang ginagawa mo ngayon para magsimula ang orasan.</div>`;
+    return;
+  }
+  const c = CAT[S.running.cat];
+  const sec = Math.max(0, Math.floor((Date.now() - S.running.start) / 1000));
+  const hh = Math.floor(sec / 3600), mm = String(Math.floor(sec / 60) % 60).padStart(2, '0'), ss = String(sec % 60).padStart(2, '0');
+  el.className = 'timer ' + GROUPCLASS[c.group];
+  el.innerHTML = `${icon(c.id)}<div class="what"><b>${c.name}</b><span class="clock num">${hh}:${mm}:${ss}</span></div>
+    <button type="button" class="stopbtn" id="stopbtn">Tapos na</button>`;
+  document.getElementById('stopbtn').onclick = () => stop();
+}
+
+/* views */
+function viewIntro() {
+  return `<section class="intro">
+    <h2>Bilangin natin ang oras mo.</h2>
+    <p class="lead">Pindutin lang ang ginagawa mo, sa bahay man, sa babuyan, sa kapehan o sa samahan. Ang app ang magbibilang ng oras.</p>
+    <ul>
+      <li>${icon('hand')}<div>Ikaw ang bahala kung sasali ka at kung kailan ka titigil.</div></li>
+      <li>${icon('lock')}<div>Walang pangalan sa log. Numero lang ang gamit mo sa ulat.</div></li>
+      <li>${icon('samahan')}<div>Sa PFAI ang datos, at kayo ang magdedesisyon dito.</div></li>
+    </ul>
+    <button type="button" class="primary" id="go">Sige, simulan ko na</button>
+    <button type="button" class="wide" id="try">Subukan muna gamit ang sample na linggo</button>
+  </section>`;
+}
+
+function sampleBanner() {
+  return S.sample ? `<div class="sample"><span>Sample na linggo lang ito, hindi totoong datos.</span><button type="button" id="clearsample">Alisin</button></div>` : '';
+}
+
+function viewNgayon() {
+  const today = dayKey(Date.now());
+  const items = S.entries.filter(e => e.day === today).sort((a, b) => (b.start || 0) - (a.start || 0));
+  const tiles = CATS.map(c => `<button type="button" class="tile ${GROUPCLASS[c.group]} ${S.running && S.running.cat === c.id ? 'on' : ''}" data-cat="${c.id}" id="tile-${c.id}">
+      ${icon(c.id)}<b>${c.name}</b><small>${c.sub}</small></button>`).join('');
+  return `${sampleBanner()}
+    <div class="tiles">${tiles}</div>
+    <button type="button" class="wide" id="addbtn">May nakalimutan? Idagdag ang oras</button>
+    <section class="sec"><h2>Ngayong araw</h2>${listHTML(items)}</section>`;
+}
+
+function listHTML(items) {
+  if (!items.length) return `<p class="empty">Wala pang naka-log ngayong araw.</p>`;
+  return `<ul class="list">${items.map(e => {
+    const c = CAT[e.cat];
+    const when = e.start ? new Date(e.start).toLocaleTimeString('en-PH', { hour: 'numeric', minute: '2-digit' }) : 'idinagdag';
+    return `<li class="${GROUPCLASS[c.group]}">${icon(c.id)}<div class="t">${c.name}<small>${when}</small></div><span class="m num">${hrs(e.mins)}</span>
+      <button type="button" class="del" data-del="${e.id}" aria-label="Burahin ang ${c.name}, ${hrs(e.mins)}">×</button></li>`;
+  }).join('')}</ul>`;
+}
+
+function weekTotals() {
+  const days = last7(), set = new Set(days);
+  const byCat = Object.fromEntries(CATS.map(c => [c.id, 0]));
+  const byDay = Object.fromEntries(days.map(d => [d, Object.fromEntries(CATS.map(c => [c.id, 0]))]));
+  for (const e of S.entries) if (set.has(e.day)) { byCat[e.cat] += e.mins; byDay[e.day][e.cat] += e.mins; }
+  return { days, byCat, byDay };
+}
+
+function viewLinggo() {
+  const { days, byCat, byDay } = weekTotals();
+  const care = byCat.bahay + byCat.alaga, kita = byCat.babuyan + byCat.kapehan;
+  const max = Math.max(1, ...CATS.map(c => byCat[c.id]));
+  const dayMax = Math.max(1, ...days.map(d => CATS.reduce((s, c) => s + byDay[d][c.id], 0)));
+  const bars = CATS.map(c => `<div class="bar ${GROUPCLASS[c.group]}">${icon(c.id)}
+      <div class="track"><span>${c.name}</span><div style="width:${(byCat[c.id] / max * 100).toFixed(1)}%"></div></div>
+      <span class="v num">${hrsShort(byCat[c.id])} oras</span></div>`).join('');
+  const dayRows = days.map(d => {
+    const tot = CATS.reduce((s, c) => s + byDay[d][c.id], 0);
+    const segs = CATS.map(c => byDay[d][c.id] ? `<i class="${GROUPCLASS[c.group]}" style="width:${(byDay[d][c.id] / dayMax * 100).toFixed(1)}%" title="${c.name}"></i>` : '').join('');
+    return `<div class="day"><span>${DAYS[keyDate(d).getDay()]}<br><small class="note num">${shortDate(d)}</small></span><div class="stack">${segs}</div><span class="v num">${hrsShort(tot)}</span></div>`;
+  }).join('');
+  return `${sampleBanner()}
+    <section class="sec">
+      <h2>Sa nakaraang 7 araw</h2>
+      <p class="lead num">${shortDate(days[0])} hanggang ${shortDate(days[6])}</p>
+    </section>
+    <div class="pair">
+      <div class="big care"><span class="n num">${hrsShort(care)}<small> oras</small></span><span>sa bahay at pag-aalaga, walang bayad</span></div>
+      <div class="big kita"><span class="n num">${hrsShort(kita)}<small> oras</small></span><span>sa babuyan at kapehan, may kita</span></div>
+    </div>
+    <section class="sec"><h2>Bawat gawain</h2><div class="bars">${bars}</div></section>
+    <section class="sec"><h2>Bawat araw, sa oras</h2>
+      <div class="legend"><span class="c-care">Walang bayad</span><span class="c-kita">May kita</span><span class="c-samahan">Samahan</span><span class="c-rest">Pahinga</span></div>
+      <div class="days">${dayRows}</div></section>`;
+}
+
+function reportText() {
+  const { days, byCat } = weekTotals();
+  const care = byCat.bahay + byCat.alaga, kita = byCat.babuyan + byCat.kapehan;
+  const lines = [
+    `Oras at Kita, Kasapi #${S.member}`,
+    `${shortDate(days[0])} hanggang ${shortDate(days[6])}`,
+    '',
+    ...CATS.map(c => `${c.name} ${hrsShort(byCat[c.id])} oras`),
+    '',
+    `Walang bayad (bahay at alaga) ${hrsShort(care)} oras`,
+    `May kita (babuyan at kapehan) ${hrsShort(kita)} oras`,
+  ];
+  if (S.sample) lines.push('', '(sample lang, hindi totoong datos)');
+  return lines.join('\n');
+}
+
+function viewUlat() {
+  return `${sampleBanner()}
+    <section class="sec">
+      <h2>Ulat para sa pulong</h2>
+      <p class="lead">Numero lang ang nasa ulat, walang pangalan. I-copy ito at ipasa sa group chat o ipakita sa general assembly.</p>
+    </section>
+    <div class="code"><div class="lbl"><b>Numero mo</b><br><span class="note">Galing sa listahan ng PFAI</span></div>
+      <div class="step"><button type="button" id="mminus" aria-label="Bawasan ang numero">−</button><output id="mval" class="num">${S.member}</output><button type="button" id="mplus" aria-label="Dagdagan ang numero">+</button></div></div>
+    <pre id="report">${esc(reportText())}</pre>
+    <button type="button" class="primary" id="copybtn">I-copy ang ulat</button>
+    <p class="note" id="syncline">${esc(syncText())}</p>
+    ${groupHTML()}
+    <button type="button" class="wide danger" id="wipe">Burahin lahat ng log ko</button>`;
+}
+
+function groupHTML() {
+  if (!db) return '';
+  if (!S.group) return `<section class="sec">
+      <h2>Samahan</h2>
+      <p class="lead">Ilagay ang code na ibinigay sa pulong. Makikita mo ang kabuuang oras ng buong samahan, at kabuuan lang ang makikita ng iba sa log mo.</p>
+      <div class="field"><label for="gcode">Code ng samahan</label>
+        <input id="gcode" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="halimbawa, pfai-2026">
+        <p class="err" id="gerr" hidden></p></div>
+      <button type="button" class="primary" id="join">Sumali bilang Kasapi #${S.member}</button>
+    </section>`;
+  return `<section class="sec">
+      <h2>${esc(S.group.name)}</h2>
+      <p class="lead">Kasapi #${S.member} ka rito. Kabuuan ng lahat ng kasapi sa nakaraang 7 araw.</p>
+      <div class="gstats" id="gstats"><p class="note">Kinukuha pa...</p></div>
+      <button type="button" class="wide" id="leave">Umalis sa samahan</button>
+    </section>`;
+}
+
+async function loadGroup() {
+  const el = document.getElementById('gstats'); if (!el || !db) return;
+  if (!navigator.onLine) { el.innerHTML = '<p class="note">Kailangan ng internet para makita ang kabuuan ng samahan.</p>'; return; }
+  try {
+    await signIn();
+    const d = last7();
+    const { data, error } = await db.rpc('group_week', { p_from: d[0], p_to: d[6] });
+    if (error) throw error;
+    if (!data) { S.group = null; save(); render(); return; }
+    const c = data.cats || {}, n = Math.max(1, data.reporting);
+    const care = (c.bahay || 0) + (c.alaga || 0), kita = (c.babuyan || 0) + (c.kapehan || 0);
+    el.innerHTML = `<div class="pair">
+        <div class="big care"><span class="n num">${hrsShort(care / n)}<small> oras</small></span><span>walang bayad, karaniwan bawat kasapi</span></div>
+        <div class="big kita"><span class="n num">${hrsShort(kita / n)}<small> oras</small></span><span>may kita, karaniwan bawat kasapi</span></div>
+      </div>
+      <p class="note num">${data.reporting} sa ${data.members} kasapi ang may log ngayong linggo. Lahat-lahat, ${hrsShort(care)} oras ang walang bayad at ${hrsShort(kita)} oras ang may kita.</p>`;
+  } catch (e) {
+    el.innerHTML = '<p class="note">Hindi makuha ang kabuuan ngayon. Subukan ulit mamaya.</p>';
+  }
+}
+
+async function joinGroup() {
+  const code = document.getElementById('gcode').value.trim().toLowerCase();
+  const err = document.getElementById('gerr');
+  const show = m => { err.textContent = m; err.hidden = false; };
+  if (!code) return show('Ilagay muna ang code.');
+  if (!navigator.onLine) return show('Kailangan ng internet para sumali.');
+  const btn = document.getElementById('join'); btn.disabled = true; btn.textContent = 'Sumasali...';
+  try {
+    await signIn();
+    const { data, error } = await db.rpc('join_group', { p_code: code, p_member_no: S.member });
+    if (error) {
+      if (error.code === 'P0002') return show('Walang samahan na may ganitong code. Pakitingnan ulit.');
+      if (error.code === '23505') return show('May gumagamit na ng Kasapi #' + S.member + '. Palitan ang numero sa itaas.');
+      throw error;
+    }
+    S.group = { name: data }; save(); render(); sync(); toast('Kasama ka na sa ' + data + '.');
+  } catch (e) {
+    show('Hindi nakasali. Subukan ulit.');
+  } finally {
+    if (btn.isConnected) { btn.disabled = false; btn.textContent = 'Sumali bilang Kasapi #' + S.member; }
+  }
+}
+
+function render() {
+  document.getElementById('dateline').textContent = (() => { const d = new Date(); return DAYS[d.getDay()] + ', ' + MONTHS[d.getMonth()] + ' ' + d.getDate(); })();
+  const main = document.getElementById('main');
+  const tabs = document.getElementById('tabs');
+  document.getElementById('timer').hidden = !S.consent;
+  tabs.hidden = !S.consent;
+  if (!S.consent) { main.innerHTML = viewIntro(); bindIntro(); return; }
+  renderTimer();
+  main.innerHTML = '<div class="view">' + (tab === 'linggo' ? viewLinggo() : tab === 'ulat' ? viewUlat() : viewNgayon()) + '</div>';
+  tabs.querySelectorAll('button').forEach(b => b.dataset.tab === tab ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current'));
+  bindView();
+  clearInterval(tick);
+  if (S.running) tick = setInterval(renderTimer, 1000);
+}
+
+function bindIntro() {
+  document.getElementById('go').onclick = () => { S.consent = true; save(); render(); };
+  document.getElementById('try').onclick = () => { S.consent = true; loadSample(); tab = 'linggo'; render(); };
+}
+
+function bindView() {
+  const cs = document.getElementById('clearsample');
+  if (cs) cs.onclick = () => { S.entries = S.entries.filter(e => !e.sample); S.sample = false; save(); render(); toast('Inalis na ang sample.'); };
+  document.querySelectorAll('[data-cat]').forEach(b => b.onclick = () => start(b.dataset.cat));
+  document.querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
+    const i = S.entries.findIndex(e => e.id === b.dataset.del); if (i < 0) return;
+    const [gone] = S.entries.splice(i, 1);
+    if (!gone.sample) S.dels.push(gone.id);
+    save(); render(); sync();
+    toast('Binura ang ' + CAT[gone.cat].name + '.', () => {
+      S.dels = S.dels.filter(x => x !== gone.id); gone.synced = false; S.entries.push(gone); save(); render(); sync(); });
+  });
+  const add = document.getElementById('addbtn'); if (add) add.onclick = openSheet;
+  const mm = document.getElementById('mminus'), mp = document.getElementById('mplus');
+  if (mm) {
+    const set = v => {
+      if (S.group) return toast('Umalis muna sa samahan bago palitan ang numero.');
+      S.member = Math.min(99, Math.max(1, v)); save();
+      document.getElementById('mval').textContent = S.member;
+      document.getElementById('report').textContent = reportText();
+      const j = document.getElementById('join'); if (j) j.textContent = 'Sumali bilang Kasapi #' + S.member;
+    };
+    mm.onclick = () => set(S.member - 1); mp.onclick = () => set(S.member + 1);
+    document.getElementById('copybtn').onclick = async () => {
+      try { await navigator.clipboard.writeText(reportText()); toast('Na-copy na ang ulat.'); }
+      catch (e) { const r = document.createRange(); r.selectNodeContents(document.getElementById('report')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('Naka-select na ang ulat. I-copy mo na lang.'); }
+    };
+    const jb = document.getElementById('join'); if (jb) jb.onclick = joinGroup;
+    const lv = document.getElementById('leave');
+    if (lv) lv.onclick = async () => {
+      if (!navigator.onLine) return toast('Kailangan ng internet para umalis sa samahan.');
+      try { await signIn(); const { error } = await db.from('members').delete().not('user_id', 'is', null); if (error) throw error; S.group = null; save(); render(); toast('Umalis ka na sa samahan.'); }
+      catch (e) { toast('Hindi nakaalis. Subukan ulit.'); }
+    };
+    loadGroup();
+    const w = document.getElementById('wipe');
+    w.onclick = () => {
+      if (w.dataset.armed) { S.entries = []; S.running = null; S.sample = false; S.dels = []; S.wipe = true; save(); tab = 'ngayon'; render(); sync(); toast('Nabura na lahat ng log.'); return; }
+      w.dataset.armed = '1'; w.textContent = 'Pindutin ulit para burahin talaga';
+      setTimeout(() => { if (w.isConnected) { delete w.dataset.armed; w.textContent = 'Burahin lahat ng log sa phone na ito'; } }, 4000);
+    };
+  }
+}
+
+/* add forgotten time */
+function openSheet() {
+  let cat = S.running ? S.running.cat : 'bahay', day = 0, mins = 60;
+  const scrim = document.createElement('div'); scrim.className = 'scrim';
+  const sh = document.createElement('div'); sh.className = 'sheet'; sh.setAttribute('role', 'dialog'); sh.setAttribute('aria-label', 'Idagdag ang oras');
+  const draw = () => {
+    sh.innerHTML = `<div class="wrap">
+      <h2>Idagdag ang oras</h2>
+      <div class="chips">${CATS.map(c => `<button type="button" class="chip ${GROUPCLASS[c.group]}" aria-pressed="${c.id === cat}" data-c="${c.id}" id="chip-${c.id}">${icon(c.id)}${c.name}</button>`).join('')}</div>
+      <div class="chips"><button type="button" class="chip" aria-pressed="${day === 0}" data-d="0" id="d0">Ngayon</button><button type="button" class="chip" aria-pressed="${day === 1}" data-d="1" id="d1">Kahapon</button></div>
+      <div class="dur"><div class="step"><button type="button" id="dminus" aria-label="Bawasan ng 15 minuto">−</button></div><output class="num">${hrs(mins)}</output><div class="step"><button type="button" id="dplus" aria-label="Dagdagan ng 15 minuto">+</button></div></div>
+      <div class="row2"><button type="button" class="wide" id="cancel">Huwag na</button><button type="button" class="primary" id="saveadd">I-save</button></div>
+    </div>`;
+    sh.querySelectorAll('[data-c]').forEach(b => b.onclick = () => { cat = b.dataset.c; draw(); });
+    sh.querySelectorAll('[data-d]').forEach(b => b.onclick = () => { day = +b.dataset.d; draw(); });
+    sh.querySelector('#dminus').onclick = () => { mins = Math.max(15, mins - 15); draw(); };
+    sh.querySelector('#dplus').onclick = () => { mins = Math.min(960, mins + 15); draw(); };
+    sh.querySelector('#cancel').onclick = close;
+    sh.querySelector('#saveadd').onclick = () => {
+      const t = new Date(); const d = dayKey(new Date(t.getFullYear(), t.getMonth(), t.getDate() - day));
+      S.entries.push({ id: uid(), cat, day: d, mins, start: null });
+      save(); close(); render(); sync(); toast(CAT[cat].name + ', ' + hrs(mins) + ', naidagdag na.');
+    };
+  };
+  const close = () => { scrim.remove(); sh.remove(); };
+  scrim.onclick = close;
+  draw();
+  document.body.append(scrim, sh);
+  sh.querySelector('#chip-' + cat).focus();
+}
+
+/* sample week for the class demo */
+function loadSample() {
+  const plan = { bahay: [210, 240, 195, 225, 250, 200, 230], alaga: [180, 150, 200, 165, 190, 175, 160], babuyan: [100, 95, 110, 90, 105, 100, 95],
+    kapehan: [0, 150, 180, 0, 210, 165, 0], samahan: [0, 0, 0, 120, 0, 0, 60], pahinga: [420, 400, 410, 430, 390, 420, 450] };
+  last7().forEach((d, i) => {
+    const base = keyDate(d); base.setHours(5, 0, 0, 0);
+    let t = base.getTime();
+    for (const c of ['bahay', 'babuyan', 'alaga', 'kapehan', 'samahan']) {
+      const m = plan[c][i]; if (!m) continue;
+      S.entries.push({ id: uid(), cat: c, day: d, mins: m, start: t, sample: true }); t += m * 60000;
+    }
+    S.entries.push({ id: uid(), cat: 'pahinga', day: d, mins: plan.pahinga[i], start: null, sample: true });
+  });
+  S.sample = true; save();
+}
+
+let toastTimer;
+function toast(msg, undo) {
+  document.querySelectorAll('.toast').forEach(t => t.remove());
+  const t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status');
+  t.innerHTML = `<span>${esc(msg)}</span>` + (undo ? '<button type="button">Ibalik</button>' : '');
+  if (undo) t.querySelector('button').onclick = () => { t.remove(); undo(); };
+  document.body.append(t);
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.remove(), undo ? 6000 : 3000);
+}
+
+document.getElementById('tabs').addEventListener('click', e => {
+  const b = e.target.closest('[data-tab]'); if (!b) return;
+  tab = b.dataset.tab; render(); scrollTo(0, 0);
+});
+addEventListener('online', () => { sync(); drawSyncLine(); });
+addEventListener('offline', drawSyncLine);
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+render();
+sync().then(pullIfEmpty);
+</script>

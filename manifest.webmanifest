@@ -1,7 +1,7 @@
 {
   "name": "Oras at Kita",
   "short_name": "Oras at Kita",
-  "description": "Logbook ng oras ng kababaihan ng PFAI, sa bahay, babuyan, kapehan at samahan.",
+  "description": "Simple time logbook para sa kababaihan ng PFAI, sa bahay, babuyan, kapehan, at samahan.",
   "lang": "fil",
   "start_url": "./",
   "scope": "./",

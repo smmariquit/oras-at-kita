@@ -1,5 +1,5 @@
 // Keeps the app shell on the phone so it opens without internet.
-const CACHE = 'oras-at-kita-v2';
+const CACHE = 'oras-at-kita-v6';
 const SHELL = [
   './',
   './index.html',
@@ -7,7 +7,8 @@ const SHELL = [
   './icon.svg',
   './icon-192.png',
   './icon-512.png',
-  'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js',
+  './qr.svg',
+  './fonts/Figtree.woff2',
 ];
 
 self.addEventListener('install', e => {

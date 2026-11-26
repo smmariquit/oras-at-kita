@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="paper">#FAFAF8</color>
+    <color name="pale">#F0F0ED</color>
+    <color name="rule">#DBDBD6</color>
+    <color name="ink">#14231A</color>
+    <color name="care">#B9472C</color>
+    <color name="kita">#1E7A3F</color>
+    <color name="samahan">#2F62B0</color>
+    <color name="rest">#6F7A6B</color>
+    <color name="accent">#E0B527</color>
+    <color name="accent_soft">#FBF0C8</color>
+</resources>

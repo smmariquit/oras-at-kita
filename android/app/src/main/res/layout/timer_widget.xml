@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/card"
+    android:orientation="vertical"
+    android:padding="12dp">
+    <LinearLayout
+        android:id="@+id/head"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView android:id="@+id/title" android:layout_width="match_parent" android:layout_height="wrap_content" android:ellipsize="end" android:maxLines="1" android:text="Ano ang ginagawa mo?" android:textColor="@color/ink" android:textSize="16sp" android:textStyle="bold" />
+            <Chronometer android:id="@+id/clock" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@color/ink" android:textSize="16sp" android:visibility="gone" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/stop"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:background="@drawable/pill"
+            android:gravity="center"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
+            android:text="Tapos na"
+            android:textColor="@color/paper"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/t_bahay"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/tile"
+            android:contentDescription="Gawaing bahay"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="4dp">
+            <ImageView android:layout_width="26dp" android:layout_height="26dp" android:src="@drawable/ic_bahay" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:maxLines="1" android:text="Gawaing bahay" android:textColor="@color/ink" android:textSize="12sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/t_alaga"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/tile"
+            android:contentDescription="Anak at matanda"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="4dp">
+            <ImageView android:layout_width="26dp" android:layout_height="26dp" android:src="@drawable/ic_alaga" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:maxLines="1" android:text="Anak at matanda" android:textColor="@color/ink" android:textSize="12sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/t_babuyan"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            
+            android:background="@drawable/tile"
+            android:contentDescription="Pagbababoy"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="4dp">
+            <ImageView android:layout_width="26dp" android:layout_height="26dp" android:src="@drawable/ic_babuyan" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:maxLines="1" android:text="Pagbababoy" android:textColor="@color/ink" android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/t_kapehan"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/tile"
+            android:contentDescription="Kape"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="4dp">
+            <ImageView android:layout_width="26dp" android:layout_height="26dp" android:src="@drawable/ic_kapehan" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:maxLines="1" android:text="Kape" android:textColor="@color/ink" android:textSize="12sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/t_samahan"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/tile"
+            android:contentDescription="Samahan"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="4dp">
+            <ImageView android:layout_width="26dp" android:layout_height="26dp" android:src="@drawable/ic_samahan" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:maxLines="1" android:text="Samahan" android:textColor="@color/ink" android:textSize="12sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/t_pahinga"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            
+            android:background="@drawable/tile"
+            android:contentDescription="Pahinga"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="4dp">
+            <ImageView android:layout_width="26dp" android:layout_height="26dp" android:src="@drawable/ic_pahinga" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:maxLines="1" android:text="Pahinga" android:textColor="@color/ink" android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

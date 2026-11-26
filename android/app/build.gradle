@@ -1,0 +1,40 @@
+plugins { id 'com.android.application' version '8.11.1' }
+
+def keyFile = file(System.getenv('ORAS_KEYSTORE') ?: System.getProperty('user.home') + '/.android/oras-at-kita.jks')
+def passFile = file(keyFile.path + '.pass')
+
+android {
+    namespace 'dev.stimmie.orasatkita'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'dev.stimmie.orasatkita'
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName '1.0'
+    }
+    compileOptions { sourceCompatibility 17; targetCompatibility 17 }
+    if (keyFile.exists()) {
+        signingConfigs {
+            release {
+                storeFile keyFile
+                storePassword passFile.text.trim()
+                keyAlias 'oras'
+                keyPassword passFile.text.trim()
+            }
+        }
+        buildTypes.release.signingConfig signingConfigs.release
+    }
+    buildTypes {
+        release { minifyEnabled false }
+    }
+    lint { checkReleaseBuilds false }
+    sourceSets.main.assets.srcDir layout.buildDirectory.dir('web')
+}
+
+// The app shows the same page as the website, copied in at build time.
+tasks.register('copyWeb', Copy) {
+    from(rootProject.projectDir.parentFile) { include 'index.html', 'qr.svg', 'icon.svg', 'icon-192.png', 'manifest.webmanifest' }
+    into layout.buildDirectory.dir('web')
+}
+preBuild.dependsOn 'copyWeb'

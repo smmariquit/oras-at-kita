@@ -1,5 +1,5 @@
 // Keeps the app shell on the phone so it opens without internet.
-const CACHE = 'oras-at-kita-v6';
+const CACHE = 'oras-at-kita-v7';
 const SHELL = [
   './',
   './index.html',

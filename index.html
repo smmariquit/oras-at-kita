@@ -225,7 +225,8 @@ nav.tabs button[aria-current="page"] .pill { background: var(--ink); color: var(
 
 .field { display: grid; gap: 6px; }
 .field label { font-weight: 700; }
-.field input { width: 100%; min-width: 0; font: inherit; font-size: 1.2rem; color: var(--ink); background: var(--surface); border: 1.5px solid var(--rule); border-radius: 14px; padding: 14px 16px; min-height: 58px; text-transform: lowercase; }
+.field input { width: 100%; min-width: 0; font: inherit; font-size: 1.2rem; color: var(--ink); background: var(--surface); border: 1.5px solid var(--rule); border-radius: 14px; padding: 14px 16px; min-height: 58px; }
+#gcode { text-transform: lowercase; }
 .field input[type="time"] { text-transform: none; }
 .field .err { color: var(--danger); font-size: .95rem; }
 .gstats { display: grid; gap: 12px; }
@@ -489,7 +490,7 @@ function viewIntro() {
     <p class="lead">Pindutin ang ginagawa mo. Titigil ang bilang pag pinindot mo ang Tapos na. Gumagana kahit walang load o signal.</p>
     <ul>
       <li>${icon('hand')}<div>Hindi ito required. Ikaw ang bahala kung gagamitin mo at kailan ka titigil.</div></li>
-      <li>${icon('lock')}<div>Walang pangalan sa report. Member number mo lang ang makikita.</div></li>
+      <li>${icon('lock')}<div>Ikaw ang pipili kung kanino ise-send ang report, at kung ilalagay ang pangalan mo.</div></li>
       <li>${icon('samahan')}<div>Sa phone mo lang ito naka-save. Walang makakakita hangga't hindi mo sine-send ang report.</div></li>
       <li>${icon('lock')}<div>Walang account, password o sign up.</div></li>
     </ul>
@@ -587,7 +588,7 @@ function viewLinggo() {
 function reportText() {
   const { days, byCat } = weekTotals();
   const lines = [
-    `Oras at Kita, Member #${S.member}`,
+    S.name ? `Oras at Kita, ${S.name}` : 'Oras at Kita',
     `${shortDate(days[0])} hanggang ${shortDate(days[days.length - 1])}`,
     '',
     ...CATS.map(c => `${c.name}: ${hrs(byCat[c.id])}`),
@@ -604,10 +605,13 @@ function viewUlat() {
     ${spanSwitch()}
     <section class="sec">
       <h2>Report ng huling ${span} araw</h2>
-      <p class="lead">Member number mo lang ang nasa report, walang pangalan. Pindutin ang I-send sa GC at piliin ang Messenger o Viber.</p>
+      <p class="lead">Pindutin ang I-send sa GC at piliin ang Messenger o Viber.</p>
     </section>
-    <div class="code"><div class="lbl"><b>Member number mo</b><br><span class="note">Itanong sa treasurer ng PFAI</span></div>
-      <div class="step"><button type="button" id="mminus" aria-label="Bawasan ang member number">−</button><output id="mval" class="num">${S.member}</output><button type="button" id="mplus" aria-label="Dagdagan ang member number">+</button></div></div>
+    <div class="field"><label for="pname">Pangalan mo</label>
+      <input id="pname" autocomplete="name" maxlength="40" placeholder="Pwedeng palayaw" value="${esc(S.name || '')}">
+      <p class="note">Hindi required. Lalabas ito sa taas ng report.</p></div>
+    ${db ? `<div class="code"><div class="lbl"><b>Member number mo</b><br><span class="note">Itanong sa treasurer ng PFAI</span></div>
+      <div class="step"><button type="button" id="mminus" aria-label="Bawasan ang member number">−</button><output id="mval" class="num">${S.member}</output><button type="button" id="mplus" aria-label="Dagdagan ang member number">+</button></div></div>` : ''}
     <pre id="report">${esc(reportText())}</pre>
     <button type="button" class="primary" id="sendbtn">I-send sa GC</button>
     <button type="button" class="wide" id="copybtn">I-copy</button>
@@ -808,6 +812,10 @@ function bindView() {
       const j = document.getElementById('join'); if (j) j.textContent = 'Join bilang Member #' + S.member;
     };
     mm.onclick = () => set(S.member - 1); mp.onclick = () => set(S.member + 1);
+  }
+  const pn = document.getElementById('pname');
+  if (pn) {
+    pn.oninput = () => { S.name = pn.value.trim(); save(); document.getElementById('report').textContent = reportText(); };
     document.getElementById('copybtn').onclick = async () => {
       try { await navigator.clipboard.writeText(reportText()); toast('Na-copy na ang report.'); }
       catch (e) { const r = document.createRange(); r.selectNodeContents(document.getElementById('report')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('Naka-highlight ang report. Pindutin nang matagal para i-copy.'); }
